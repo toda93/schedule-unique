@@ -9,7 +9,7 @@ export function scheduleUnique(name, rule, timeout, callback) {
                 if (!listJob.has(name)) {
                     listJob.add(name);
                     Promise.race([
-                        endOnTimeout(timeout),
+                        delay(timeout),
                         callback()
                     ]).then(result => {
                         listJob.delete(name);
@@ -23,10 +23,12 @@ export function scheduleUnique(name, rule, timeout, callback) {
                 process.exit(1);
             }
         });
+    } else {
+        throw `duplicate job ${name}`;
     }
 }
 
-function endOnTimeout(timeout) {
+function delay(timeout) {
     return new Promise((resolve, reject) => {
         let wait = setTimeout(() => {
             clearTimeout(wait);
