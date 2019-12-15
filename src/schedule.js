@@ -4,19 +4,19 @@ let listJob = new Set();
 export function scheduleUnique(name, rule, timeout, callback) {
     const currentJob = schedule.scheduledJobs[name];
     if (!currentJob) {
-        schedule.scheduleJob(name, rule, async () => {
+        schedule.scheduleJob(name, rule, () => {
             try {
                 if (!listJob.has(name)) {
                     listJob.add(name);
-                    const result = await Promise.race([
+                    Promise.race([
                         endOnTimeout(timeout),
                         callback()
-                    ]);
-                    listJob.delete(name);
-                    if (result === 'timeout') {
-                        process.kill(process.pid);
-
-                    }
+                    ]).then(result => {
+                        listJob.delete(name);
+                        if (result === 'timeout') {
+                            process.kill(process.pid);
+                        }
+                    });
                 }
             } catch (e) {
                 console.error('error', e);
