@@ -1,6 +1,6 @@
 {
-  "name": "toda-schedule-unique",
-  "version": "1.0.7",
+  "name": "@azteam/schedule-unique",
+  "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
   "repository": {
