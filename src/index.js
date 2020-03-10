@@ -31,13 +31,13 @@ class ScheduleUniqueProvider {
         if (!currentJob) {
             schedule.scheduleJob(name, rule, () => {
                 try {
-                    if (!listJob.has(name)) {
-                        listJob.add(name);
+                    if (!this.listJob.has(name)) {
+                        this.listJob.add(name);
                         Promise.race([
                             delay(timeout),
                             callback()
                         ]).then(result => {
-                            listJob.delete(name);
+                            this.listJob.delete(name);
                             if (result === 'timeout') {
                                 process.kill(process.pid);
                             }
