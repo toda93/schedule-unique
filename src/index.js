@@ -10,17 +10,16 @@ function delay(timeout) {
     });
 }
 
-class ScheduleClusterProvider {
+class ScheduleUniqueProvider {
 
     constructor() {
         this.listJob = new Set();
         this.countSchedule = 0;
     }
 
-   
-    addSchedule(name, rule, timeout, callback) {
 
-        if(this.countSchedule % process.env.instances === process.env.pm_id){
+    addSchedule(name, rule, timeout, callback) {
+        if (this.countSchedule % Number(process.env.instances) === Number(process.env.pm_id)) {
             this.run(name, rule, timeout, callback);
         }
         this.countSchedule++;
@@ -54,4 +53,4 @@ class ScheduleClusterProvider {
         }
     }
 }
-export default new ScheduleClusterProvider;
+export default new ScheduleUniqueProvider;
