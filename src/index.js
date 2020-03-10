@@ -19,16 +19,7 @@ class ScheduleUniqueProvider {
 
 
     addSchedule(name, rule, timeout, callback) {
-
-        console.error(
-            name,
-            this.countSchedule % Number(process.env.instances) === Number(process.env.pm_id),
-            this.countSchedule,
-            process.env.instances,
-            process.env.pm_id,
-        );
-
-        if (this.countSchedule % Number(process.env.instances) === Number(process.env.pm_id)) {
+        if (process.env.NODE_APP_INSTANCE === '0') {
             this.run(name, rule, timeout, callback);
         }
         this.countSchedule++;
