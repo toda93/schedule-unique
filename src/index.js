@@ -1,32 +1,5 @@
-const schedule = require('node-schedule');
+import schedule from 'node-schedule';
 
-let listJob = new Set();
-function scheduleUnique(name, rule, timeout, callback) {
-    const currentJob = schedule.scheduledJobs[name];
-    if (!currentJob) {
-        schedule.scheduleJob(name, rule, () => {
-            try {
-                if (!listJob.has(name)) {
-                    listJob.add(name);
-                    Promise.race([
-                        delay(timeout),
-                        callback()
-                    ]).then(result => {
-                        listJob.delete(name);
-                        if (result === 'timeout') {
-                            process.kill(process.pid);
-                        }
-                    });
-                }
-            } catch (e) {
-                console.error('error', e);
-                process.exit(1);
-            }
-        });
-    } else {
-        throw `duplicate job ${name}`;
-    }
-}
 
 function delay(timeout) {
     return new Promise((resolve, reject) => {
@@ -37,4 +10,48 @@ function delay(timeout) {
     });
 }
 
-module.exports = scheduleUnique;
+class ScheduleClusterProvider {
+
+    constructor() {
+        this.listJob = new Set();
+        this.countSchedule = 0;
+    }
+
+   
+    addSchedule(name, rule, timeout, callback) {
+
+        if(this.countSchedule % process.env.instances === process.env.pm_id){
+            this.run(name, rule, timeout, callback);
+        }
+        this.countSchedule++;
+
+    }
+
+    run(name, rule, timeout, callback) {
+        const currentJob = schedule.scheduledJobs[name];
+        if (!currentJob) {
+            schedule.scheduleJob(name, rule, () => {
+                try {
+                    if (!listJob.has(name)) {
+                        listJob.add(name);
+                        Promise.race([
+                            delay(timeout),
+                            callback()
+                        ]).then(result => {
+                            listJob.delete(name);
+                            if (result === 'timeout') {
+                                process.kill(process.pid);
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.error('error', e);
+                    process.exit(1);
+                }
+            });
+        } else {
+            throw `duplicate job ${name}`;
+        }
+    }
+}
+export default new ScheduleClusterProvider;
