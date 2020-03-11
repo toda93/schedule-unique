@@ -52,7 +52,7 @@ class ScheduleUniqueProvider {
                 }
             });
         } else {
-            throw `duplicate job ${name}`;
+            console.info(`duplicate job ${name}`);
         }
     }
 }
