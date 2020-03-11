@@ -44,16 +44,19 @@ class ScheduleUniqueProvider {
                             if (result === 'timeout') {
                                 process.kill(process.pid);
                             }
+                        }).catch(err => {
+                            this.listJob.delete(name);
                         });
+                    } else {
+                        console.info(`duplicate job ${name}`);
                     }
-                } catch (e) {
-                    console.error('error', e);
-                    process.exit(1);
+                } catch (err) {
+                    console.error('error', err);
+                    process.kill(process.pid);
                 }
             });
-        } else {
-            console.info(`duplicate job ${name}`);
-        }
+        } 
     }
 }
+
 export default new ScheduleUniqueProvider;
