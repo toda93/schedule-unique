@@ -46,6 +46,7 @@ class ScheduleUniqueProvider {
                             }
                         }).catch(err => {
                             this.listJob.delete(name);
+                            process.kill(process.pid);
                         });
                     } else {
                         console.info(`duplicate job ${name}`);
