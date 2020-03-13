@@ -48,7 +48,6 @@ class ScheduleUniqueProvider {
                             callbackError(err);
                         }
                         this.listJob.delete(name);
-                        process.kill(process.pid);
                     });
                 }
             });
