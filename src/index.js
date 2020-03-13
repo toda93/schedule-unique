@@ -18,45 +18,41 @@ class ScheduleUniqueProvider {
     }
 
 
-    addSchedule(name, rule, timeout, callback) {
+    addSchedule(name, rule, timeout, callback, callbackError = null) {
         if (
             (!!process.env.instances && this.countSchedule % process.env.instances === process.env.pm_id) ||
             (process.env.NODE_APP_INSTANCE === '0')
         ) {
-            this.run(name, rule, timeout, callback);
+            this.run(name, rule, timeout, callback, callbackError);
         }
         this.countSchedule++;
 
     }
 
-    run(name, rule, timeout, callback) {
+    run(name, rule, timeout, callback, callbackError = null) {
         const currentJob = schedule.scheduledJobs[name];
         if (!currentJob) {
             schedule.scheduleJob(name, rule, () => {
-                try {
-                    if (!this.listJob.has(name)) {
-                        this.listJob.add(name);
-                        Promise.race([
-                            delay(timeout),
-                            callback()
-                        ]).then(result => {
-                            this.listJob.delete(name);
-                            if (result === 'timeout') {
-                                process.kill(process.pid);
-                            }
-                        }).catch(err => {
-                            this.listJob.delete(name);
+                if (!this.listJob.has(name)) {
+                    this.listJob.add(name);
+                    Promise.race([
+                        delay(timeout),
+                        callback()
+                    ]).then(result => {
+                        this.listJob.delete(name);
+                        if (result === 'timeout') {
                             process.kill(process.pid);
-                        });
-                    } else {
-                        console.info(`duplicate job ${name}`);
-                    }
-                } catch (err) {
-                    console.error('error', err);
-                    process.kill(process.pid);
+                        }
+                    }).catch(err => {
+                        if (callbackError) {
+                            callbackError(err);
+                        }
+                        this.listJob.delete(name);
+                        process.kill(process.pid);
+                    });
                 }
             });
-        } 
+        }
     }
 }
 
