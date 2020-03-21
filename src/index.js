@@ -44,9 +44,7 @@ class ScheduleUniqueProvider {
                             process.kill(process.pid);
                         }
                     }).catch(err => {
-                        if (callbackError) {
-                            callbackError(err);
-                        }
+                        callbackError && callbackError(err);
                         this.listJob.delete(name);
                     });
                 }
