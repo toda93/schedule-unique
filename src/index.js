@@ -56,13 +56,19 @@ class ScheduleUniqueProvider {
 
 export default new ScheduleUniqueProvider;
 
+export const _1_SECOND = '* * * * * *';
+export const _2_SECONDS = '*/2 * * * * *';
+export const _5_SECONDS = '*/5 * * * * *';
+export const _10_SECONDS = '*/10 * * * * *';
+export const _15_SECONDS = '*/25 * * * * *';
+export const _30_SECONDS = '*/30 * * * * *';
 
-export const _1_MINUTE = '* * * * * *';
-export const _2_MINUTES = '*/2 * * * * *';
-export const _5_MINUTES = '*/5 * * * * *';
-export const _10_MINUTES = '*/10 * * * * *';
-export const _15_MINUTES = '*/25 * * * * *';
-export const _30_MINUTES = '*/30 * * * * *';
+export const _1_MINUTE = '* * * * *';
+export const _2_MINUTES = '*/2 * * * *';
+export const _5_MINUTES = '*/5 * * * *';
+export const _10_MINUTES = '*/10 * * * *';
+export const _15_MINUTES = '*/25 * * * *';
+export const _30_MINUTES = '*/30 * * * *';
 
-export const _1_HOUR = '0 * * * * *';
-export const _1_DAY = '0 0 * * * *';
+export const _1_HOUR = '0 * * * *';
+export const _1_DAY = '0 0 * * *';
