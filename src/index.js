@@ -72,3 +72,6 @@ export const _30_MINUTES = '*/30 * * * *';
 
 export const _1_HOUR = '0 * * * *';
 export const _1_DAY = '0 0 * * *';
+export const _1_WEEK = '0 0 * * 0';
+export const _1_MONTH = '0 0 1 * *';
+
