@@ -1,12 +1,12 @@
 import schedule from 'node-schedule';
 
 
-function delay(timeout) {
+function delay(timeoutSecond) {
     return new Promise((resolve, reject) => {
         let wait = setTimeout(() => {
             clearTimeout(wait);
-            resolve('timeout')
-        }, timeout * 1000)
+            resolve('timeoutSecond')
+        }, timeoutSecond * 1000)
     });
 }
 
@@ -18,30 +18,30 @@ class ScheduleUniqueProvider {
     }
 
 
-    addSchedule(name, rule, timeout, callback, callbackError = null) {
+    addSchedule(name, rule, timeoutSecond, callback, callbackError = null) {
         if (
             (!!process.env.instances && this.countSchedule % Number(process.env.instances) === Number(process.env.pm_id)) ||
             (process.env.NODE_APP_INSTANCE === '0') ||
             (process.env.INSTANCE_ID === '0')
         ) {
-            this.run(name, rule, timeout, callback, callbackError);
+            this.run(name, rule, timeoutSecond, callback, callbackError);
         }
         this.countSchedule++;
 
     }
 
-    run(name, rule, timeout, callback, callbackError = null) {
+    run(name, rule, timeoutSecond, callback, callbackError = null) {
         const currentJob = schedule.scheduledJobs[name];
         if (!currentJob) {
             schedule.scheduleJob(name, rule, () => {
                 if (!this.listJob.has(name)) {
                     this.listJob.add(name);
                     Promise.race([
-                        delay(timeout),
+                        delay(timeoutSecond),
                         callback()
                     ]).then(result => {
                         this.listJob.delete(name);
-                        if (result === 'timeout') {
+                        if (result === 'timeoutSecond') {
                             process.kill(process.pid);
                         }
                     }).catch(err => {
